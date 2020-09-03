@@ -27,6 +27,9 @@
         <dubbo.spring.boot.starter.version>2.7.1</dubbo.spring.boot.starter.version>
         <dubbo.version>2.7.1</dubbo.version>
         <dubbo.dependencies.zookeeper.version>2.7.1</dubbo.dependencies.zookeeper.version>
+        <fastdfs-client-java>1.29-SNAPSHOT</fastdfs-client-java>
+
+        <commons-io>2.6</commons-io>
     </properties>
 
     <dependencyManagement>
@@ -56,6 +59,19 @@
                 <type>pom</type>
             </dependency>
 
+            <!--图片上传处理器-->
+            <dependency>
+                <groupId>org.csource</groupId>
+                <artifactId>fastdfs-client-java</artifactId>
+                <version>${fastdfs-client-java}</version>
+            </dependency>
+
+            <!--工具包-->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

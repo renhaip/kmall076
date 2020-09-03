@@ -2,6 +2,7 @@ package com.kgc.kmall.service;
 
 import com.kgc.kmall.bean.PmsBaseSaleAttr;
 import com.kgc.kmall.bean.PmsProductInfo;
+import com.kgc.kmall.bean.PmsProductSaleAttr;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface SpuService {
     //添加
     public Integer  saveSpuInfo(PmsProductInfo pmsProductInfo);
 
+
+    List<PmsProductSaleAttr> spuSaleAttrList(Integer spuId);
 }

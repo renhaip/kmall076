@@ -60,6 +60,12 @@
       </exclusions>
       <type>pom</type>
     </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
   </dependencies>
 
 
