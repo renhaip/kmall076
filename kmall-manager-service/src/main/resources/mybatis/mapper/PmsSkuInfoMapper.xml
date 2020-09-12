@@ -11,6 +11,13 @@
     <result column="tm_id" property="tmId" jdbcType="BIGINT" />
     <result column="catalog3_id" property="catalog3Id" jdbcType="BIGINT" />
     <result column="sku_default_img" property="skuDefaultImg" jdbcType="VARCHAR" />
+    <collection property="skuImageList" ofType="com.kgc.kmall.bean.PmsSkuImage">
+      <result column="id" property="skuId" jdbcType="BIGINT" />
+      <result column="img_name" property="imgName" jdbcType="VARCHAR" />
+      <result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+      <result column="product_img_id" property="spuImgId" jdbcType="BIGINT"/>
+      <result column="is_default" property="isDefault" jdbcType="VARCHAR" />
+    </collection>
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -71,7 +78,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, product_id, price, sku_name, sku_desc, weight, tm_id, catalog3_id, sku_default_img
+    id, product_id, price, sku_name, sku_desc, weight, tm_id, catalog3_id, sku_default_img,img_name,img_url,product_img_id,is_default
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.kgc.kmall.bean.PmsSkuInfoExample" >
     select
@@ -90,7 +97,7 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from pms_sku_info
+    from view_sku_image
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >

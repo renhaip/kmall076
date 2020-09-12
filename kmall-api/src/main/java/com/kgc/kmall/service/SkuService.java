@@ -9,4 +9,6 @@ import com.kgc.kmall.bean.PmsSkuInfo;
 public interface SkuService {
 
     public Integer saveSkuInfo(PmsSkuInfo pmsSkuInfo);
+
+    PmsSkuInfo selectBySkuId(Long skuId);
 }

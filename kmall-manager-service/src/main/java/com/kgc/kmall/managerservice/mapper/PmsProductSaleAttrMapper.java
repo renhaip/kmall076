@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface PmsProductSaleAttrMapper {
+
     int countByExample(PmsProductSaleAttrExample example);
 
     int deleteByExample(PmsProductSaleAttrExample example);
@@ -28,4 +29,6 @@ public interface PmsProductSaleAttrMapper {
     int updateByPrimaryKeySelective(PmsProductSaleAttr record);
 
     int updateByPrimaryKey(PmsProductSaleAttr record);
+
+    List<PmsProductSaleAttr> spuSaleAttrListIsCheck(@Param("spuId") Long spuId,@Param("skuId") Long skuId);
 }
