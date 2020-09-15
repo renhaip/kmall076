@@ -222,4 +222,6 @@
       <result column="isChecked" property="isChecked"/>
     </collection>
   </resultMap>
+
+
 </mapper>

@@ -30,6 +30,12 @@
         <fastdfs-client-java>1.29-SNAPSHOT</fastdfs-client-java>
 
         <commons-io>2.6</commons-io>
+
+        <!--json-->
+        <fastjson.version>1.2.46</fastjson.version>
+
+        <!--jedis 缓存-->
+        <jedis.version>2.9.0</jedis.version>
     </properties>
 
     <dependencyManagement>
@@ -72,6 +78,19 @@
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

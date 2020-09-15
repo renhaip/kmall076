@@ -63,6 +63,12 @@
       <version>${dubbo.dependencies.zookeeper.version}</version>
       <type>pom</type>
     </dependency>
+
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
