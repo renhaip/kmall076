@@ -69,6 +69,13 @@
       <artifactId>jedis</artifactId>
     </dependency>
 
+
+    <!--redisson 锁-->
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
