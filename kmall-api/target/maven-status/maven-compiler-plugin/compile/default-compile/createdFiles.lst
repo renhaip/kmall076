@@ -1,0 +1,16 @@
+com\kgc\kmall\bean\MemberExample.class
+com\kgc\kmall\bean\MemberLevelExample$GeneratedCriteria.class
+com\kgc\kmall\bean\MemberReceiveAddress.class
+com\kgc\kmall\bean\MemberReceiveAddressExample.class
+com\kgc\kmall\bean\MemberExample$Criteria.class
+com\kgc\kmall\App.class
+com\kgc\kmall\bean\MemberExample$Criterion.class
+com\kgc\kmall\bean\MemberLevelExample.class
+com\kgc\kmall\bean\Member.class
+com\kgc\kmall\bean\MemberExample$GeneratedCriteria.class
+com\kgc\kmall\bean\MemberReceiveAddressExample$Criteria.class
+com\kgc\kmall\bean\MemberReceiveAddressExample$GeneratedCriteria.class
+com\kgc\kmall\bean\MemberLevelExample$Criterion.class
+com\kgc\kmall\bean\MemberLevel.class
+com\kgc\kmall\bean\MemberLevelExample$Criteria.class
+com\kgc\kmall\bean\MemberReceiveAddressExample$Criterion.class

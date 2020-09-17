@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/fastdfs-client-java/fastdfs-client-java.iml" filepath="$PROJECT_DIR$/fastdfs-client-java/fastdfs-client-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-api/kmall-api.iml" filepath="$PROJECT_DIR$/kmall-api/kmall-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-common-util/kmall-common-util.iml" filepath="$PROJECT_DIR$/kmall-common-util/kmall-common-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-item-web/kmall-item-web.iml" filepath="$PROJECT_DIR$/kmall-item-web/kmall-item-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-manager-service/kmall-manager-service.iml" filepath="$PROJECT_DIR$/kmall-manager-service/kmall-manager-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-manager-web/kmall-manager-web.iml" filepath="$PROJECT_DIR$/kmall-manager-web/kmall-manager-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-parent/kmall-parent.iml" filepath="$PROJECT_DIR$/kmall-parent/kmall-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-redisson-test/kmall-redisson-test.iml" filepath="$PROJECT_DIR$/kmall-redisson-test/kmall-redisson-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-service-util/kmall-service-util.iml" filepath="$PROJECT_DIR$/kmall-service-util/kmall-service-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-user-service/kmall-user-service.iml" filepath="$PROJECT_DIR$/kmall-user-service/kmall-user-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-user-web/kmall-user-web.iml" filepath="$PROJECT_DIR$/kmall-user-web/kmall-user-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall-web-util/kmall-web-util.iml" filepath="$PROJECT_DIR$/kmall-web-util/kmall-web-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kmall076.iml" filepath="$PROJECT_DIR$/kmall076.iml" />
+    </modules>
+  </component>
+</project>

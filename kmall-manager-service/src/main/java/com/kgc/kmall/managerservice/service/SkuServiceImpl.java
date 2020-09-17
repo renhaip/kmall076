@@ -142,7 +142,6 @@ public class SkuServiceImpl implements SkuService {
             if(skuInfoJson.equals("empty")){
                 return null;
             }
-
             //从缓存中获取数据
             pmsSkuInfo = JSON.parseObject(skuInfoJson, PmsSkuInfo.class);
         }else{
@@ -169,37 +168,36 @@ public class SkuServiceImpl implements SkuService {
 
     @Override
     public List<PmsSkuInfo> selectBySpuId(Long spuId) {
-      /*  List<PmsSkuInfo> pmsSkuInfo=null;
+        List<PmsSkuInfo> pmsSkuInfo=null;
+        String key="spu:"+spuId+":info";
         Jedis jedis = redisUtil.getJedis();
-        String key="sku:"+spuId+":info";
-        String spuInfoJson = jedis.get(key);
-        if(spuInfoJson!=null){
+        String skuInfoJson = jedis.get(key);
+        if(skuInfoJson!=null){
             //缓存中有数据
-            if(spuInfoJson.equals("empty")){
+            if(skuInfoJson.equals("empty")){
                 return null;
-            //从缓存中获取数据
-//            pmsSkuInfo = JSON.parseObject(spuInfoJson, PmsSkuInfo.class);
-        }else{
-                Lock lock = redissonClient.getLock("lock");// 声明锁
-                lock.lock();//上锁
-                pmsSkuInfo = pmsSkuInfoMapper.selectBySpuId(spuId);
-
-                //防止缓存穿透，从DB中找不到数据也要缓存，但是缓存时间不要太长
-                if(pmsSkuInfo!=null){
-                    String s = JSON.toJSONString(pmsSkuInfo);
-                    //有效期随机，防止缓存雪崩
-                    Random random=new Random();
-                    int i = random.nextInt(10);
-//                    jedis.setex(key,i*60*1000,s);
-                    jedis.set(key,s);
-                }else{
-                    jedis.setex(key,5*60*1000,"empty");
-                }
-                lock.unlock();// 解锁
             }
+            //从缓存中获取数据
+            pmsSkuInfo = JSON.parseArray(skuInfoJson, PmsSkuInfo.class);
+        }else{
+            Lock lock = redissonClient.getLock("lock");// 声明锁
+            lock.lock();//上锁
+
+            //从数据库中获取数据
+            pmsSkuInfo = pmsSkuInfoMapper.selectBySpuId(spuId);
+            //防止缓存穿透，从DB中找不到数据也要缓存，但是缓存时间不要太长
+            if(pmsSkuInfo!=null){
+                String s = JSON.toJSONString(pmsSkuInfo);
+                //有效期随机，防止缓存雪崩
+                Random random=new Random();
+                int i = random.nextInt(10);
+//                    jedis.setex(key,i*60*1000,s);
+                jedis.set(key,s);
+            }else{
+                jedis.setex(key,5*60*1000,"empty");
+            }
+            lock.unlock();// 解锁
         }
-*/
-        List<PmsSkuInfo>   pmsSkuInfo = pmsSkuInfoMapper.selectBySpuId(spuId);
         return pmsSkuInfo;
     }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/kmall-parent/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-api/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-common-util/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-service-util/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-web-util/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-user-web/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-manager-service/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-manager-web/pom.xml" />
+        <option value="$PROJECT_DIR$/fastdfs-client-java/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-item-web/pom.xml" />
+        <option value="$PROJECT_DIR$/kmall-redisson-test/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
