@@ -38,6 +38,10 @@
         <jedis.version>2.9.0</jedis.version>
 
         <redisson.version>3.10.5</redisson.version>
+
+        <jest.version>5.3.4</jest.version>
+
+        <elasticsearch-rest-high-level-client.version>6.2.3</elasticsearch-rest-high-level-client.version>
     </properties>
 
     <dependencyManagement>
@@ -100,6 +104,18 @@
                 <version>${redisson.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>io.searchbox</groupId>
+                <artifactId>jest</artifactId>
+                <version>${jest.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.elasticsearch.client</groupId>
+                <artifactId>elasticsearch-rest-high-level-client</artifactId>
+                <version>${elasticsearch-rest-high-level-client.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

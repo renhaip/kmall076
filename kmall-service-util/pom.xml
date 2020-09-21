@@ -76,6 +76,16 @@
       <artifactId>redisson</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.searchbox</groupId>
+      <artifactId>jest</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

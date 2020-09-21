@@ -1,10 +1,7 @@
 package com.kgc.kmall.managerservice.service;
 
 import com.alibaba.fastjson.JSON;
-import com.kgc.kmall.bean.PmsSkuAttrValue;
-import com.kgc.kmall.bean.PmsSkuImage;
-import com.kgc.kmall.bean.PmsSkuInfo;
-import com.kgc.kmall.bean.PmsSkuSaleAttrValue;
+import com.kgc.kmall.bean.*;
 import com.kgc.kmall.managerservice.mapper.PmsSkuAttrValueMapper;
 import com.kgc.kmall.managerservice.mapper.PmsSkuImageMapper;
 import com.kgc.kmall.managerservice.mapper.PmsSkuInfoMapper;
@@ -199,5 +196,29 @@ public class SkuServiceImpl implements SkuService {
             lock.unlock();// 解锁
         }
         return pmsSkuInfo;
+    }
+
+    @Override
+    public List<PmsSkuInfo> getAllSku() {
+       /* List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoMapper.selectByExample(null);
+        for (PmsSkuInfo pmsSkuInfo : pmsSkuInfos) {
+            PmsSkuAttrValueExample example=new PmsSkuAttrValueExample();
+            PmsSkuAttrValueExample.Criteria criteria = example.createCriteria();
+            criteria.andSkuIdEqualTo(pmsSkuInfo.getId());
+            List<PmsSkuAttrValue> pmsSkuAttrValues = pmsSkuAttrValueMapper.selectByExample(example);
+            pmsSkuInfo.setSkuAttrValueList(pmsSkuAttrValues);
+
+        }
+        return pmsSkuInfos;*/
+//        List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoMapper.selectBySpuId(new Long((long)65));
+        List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoMapper.selectByExample(null);
+        for (PmsSkuInfo pmsSkuInfo : pmsSkuInfos) {
+            PmsSkuAttrValueExample example=new PmsSkuAttrValueExample();
+            PmsSkuAttrValueExample.Criteria criteria = example.createCriteria();
+            criteria.andSkuIdEqualTo(pmsSkuInfo.getId());
+            List<PmsSkuAttrValue> pmsSkuAttrValues = pmsSkuAttrValueMapper.selectByExample(example);
+            pmsSkuInfo.setSkuAttrValueList(pmsSkuAttrValues);
+        }
+        return pmsSkuInfos;
     }
 }
