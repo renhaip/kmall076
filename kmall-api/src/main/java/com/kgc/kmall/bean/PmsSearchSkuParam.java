@@ -1,7 +1,6 @@
 package com.kgc.kmall.bean;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author shkstart
@@ -13,7 +12,17 @@ public class PmsSearchSkuParam implements Serializable {
     //根据三级分类查询
     private String catalog3Id;
     //根据平台属性id查询
-    private List<PmsSkuAttrValue> skuAttrValueList;
+//    private List<PmsSkuAttrValue> skuAttrValueList;
+
+    private String[] valueId;
+
+    public String[] getValueId() {
+        return valueId;
+    }
+
+    public void setValueId(String[] valueId) {
+        this.valueId = valueId;
+    }
 
     public String getKeyword() {
         return keyword;
@@ -31,11 +40,11 @@ public class PmsSearchSkuParam implements Serializable {
         this.catalog3Id = catalog3Id;
     }
 
-    public List<PmsSkuAttrValue> getSkuAttrValueList() {
+  /*  public List<PmsSkuAttrValue> getSkuAttrValueList() {
         return skuAttrValueList;
     }
 
     public void setSkuAttrValueList(List<PmsSkuAttrValue> skuAttrValueList) {
         this.skuAttrValueList = skuAttrValueList;
-    }
+    }*/
 }

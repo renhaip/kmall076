@@ -96,7 +96,9 @@
                     </div>
                     <div class="sl_value">
                         <ul>
-                            <li  th:each="attrValue:${attrInfo.attrValueList}"><a th:href="'/list.html?'+${urlParam}+'&valueId='+${attrValue.id}"  th:text="${attrValue.valueName}">属性值</a></li>
+                            <li  th:each="attrValue:${attrInfo.attrValueList}">
+                                <a th:href="'/list.html?'+${urlParam}+'&valueId='+${attrValue.id}"  th:text="${attrValue.valueName}">属性值</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -455,7 +457,7 @@
         $(this).css({display:"none"})
     });
     //显示隐藏
-    var $li = $(".GM_nav_logo>div:gt(3)").hide();
+    var $li = $(".GM_nav_logo>div:gt(3)").show();
       $('.GM_show span').click(function(){
           if($li.is(':hidden')){
               $li.show();

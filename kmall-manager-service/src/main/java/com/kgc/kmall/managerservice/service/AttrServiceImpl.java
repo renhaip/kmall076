@@ -12,6 +12,7 @@ import org.apache.dubbo.config.annotation.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author shkstart
@@ -27,14 +28,14 @@ public class AttrServiceImpl implements AttrService {
 
     @Override
     public List<PmsBaseAttrInfo> select(Long catalog3Id) {
-        PmsBaseAttrInfoExample example=new PmsBaseAttrInfoExample();
+        PmsBaseAttrInfoExample example = new PmsBaseAttrInfoExample();
         PmsBaseAttrInfoExample.Criteria criteria = example.createCriteria();
         criteria.andCatalog3IdEqualTo(catalog3Id);
         List<PmsBaseAttrInfo> pmsBaseAttrInfos = pmsBaseAttrInfoMapper.selectByExample(example);
 
-            //查询平台属性值
+        //查询平台属性值
         for (PmsBaseAttrInfo pmsBaseAttrInfo : pmsBaseAttrInfos) {
-            PmsBaseAttrValueExample example1=new PmsBaseAttrValueExample();
+            PmsBaseAttrValueExample example1 = new PmsBaseAttrValueExample();
             PmsBaseAttrValueExample.Criteria criteria1 = example1.createCriteria();
             criteria1.andAttrIdEqualTo(pmsBaseAttrInfo.getId());
             List<PmsBaseAttrValue> pmsBaseAttrValues = pmsBaseAttrValueMapper.selectByExample(example1);
@@ -47,35 +48,51 @@ public class AttrServiceImpl implements AttrService {
     public Integer add(PmsBaseAttrInfo attrInfo) {
 
         //判断添加还是修改   属性
-        if(attrInfo.getId()==null){
+        if (attrInfo.getId() == null) {
             pmsBaseAttrInfoMapper.insert(attrInfo);
-        }else{
+        } else {
             pmsBaseAttrInfoMapper.updateByPrimaryKey(attrInfo);
         }
 
         //删除原属性值
-        PmsBaseAttrValueExample example=new PmsBaseAttrValueExample();
+        PmsBaseAttrValueExample example = new PmsBaseAttrValueExample();
         PmsBaseAttrValueExample.Criteria criteria = example.createCriteria();
         criteria.andAttrIdEqualTo(attrInfo.getId());
         pmsBaseAttrValueMapper.deleteByExample(example);
 
 
         //添加新的属性值
-        if(attrInfo.getAttrValueList()!=null&&attrInfo.getAttrValueList().size()>0){
-            pmsBaseAttrValueMapper.insertBatch(attrInfo.getId(),attrInfo.getAttrValueList());
+        if (attrInfo.getAttrValueList() != null && attrInfo.getAttrValueList().size() > 0) {
+            pmsBaseAttrValueMapper.insertBatch(attrInfo.getId(), attrInfo.getAttrValueList());
         }
 
 
-        return  attrInfo.getId().intValue();
+        return attrInfo.getId().intValue();
 
     }
 
     @Override
     public List<PmsBaseAttrValue> getAttrValueList(Long attrId) {
-        PmsBaseAttrValueExample example=new PmsBaseAttrValueExample();
+        PmsBaseAttrValueExample example = new PmsBaseAttrValueExample();
         PmsBaseAttrValueExample.Criteria criteria = example.createCriteria();
         criteria.andAttrIdEqualTo(attrId);
         List<PmsBaseAttrValue> valueList = pmsBaseAttrValueMapper.selectByExample(example);
         return valueList;
+    }
+
+    @Override
+    public List<PmsBaseAttrInfo> selectAttrInfoValueListByValueId(Set<Long> valueIds) {
+        StringBuffer stringBuffer = new StringBuffer();
+        String str="";
+        for (Long valueId : valueIds) {
+            stringBuffer.append(valueId + ",");
+        }
+        if(stringBuffer.length()>0){
+            str=stringBuffer.substring(0,stringBuffer.length()-1);
+        }else{
+            str="-1";
+        }
+        List<PmsBaseAttrInfo> pmsBaseAttrInfos = pmsBaseAttrInfoMapper.selectAttrInfoValueListByValueId(str);
+        return pmsBaseAttrInfos;
     }
 }

@@ -42,6 +42,8 @@
         <jest.version>5.3.4</jest.version>
 
         <elasticsearch-rest-high-level-client.version>6.2.3</elasticsearch-rest-high-level-client.version>
+
+        <commons.lang3>3.8.1</commons.lang3>
     </properties>
 
     <dependencyManagement>
@@ -116,6 +118,13 @@
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
                 <version>${elasticsearch-rest-high-level-client.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
