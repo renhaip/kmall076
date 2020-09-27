@@ -58,12 +58,12 @@ public class SearchServiceImpl implements SearchService {
             }
         }*/
         if(skuAttrValueList!=null&&skuAttrValueList.length>0){
-            List<Long> list=new ArrayList<>();
+//            List<Long> list=new ArrayList<>();
             for (String pmsSkuAttrValue : skuAttrValueList) {
-                list.add(Long.parseLong(pmsSkuAttrValue));
+//                list.add(Long.parseLong(pmsSkuAttrValue));
+                TermsQueryBuilder termsQueryBuilder=new TermsQueryBuilder("skuAttrValueList.valueId",pmsSkuAttrValue);
+                boolQueryBuilder.filter(termsQueryBuilder);
             }
-            TermsQueryBuilder termsQueryBuilder=new TermsQueryBuilder("skuAttrValueList.valueId",list);
-            boolQueryBuilder.filter(termsQueryBuilder);
         }
 
 
