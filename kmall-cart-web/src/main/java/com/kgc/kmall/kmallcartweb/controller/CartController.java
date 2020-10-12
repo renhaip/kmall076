@@ -11,13 +11,12 @@ import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author shkstart
@@ -58,7 +57,7 @@ public class CartController {
         omsCartItem.setQuantity(num);
 
         // 判断用户是否登录
-        String memberId = "";
+        String memberId = "1";
 
         if (StringUtils.isBlank(memberId)) {
             //cookie里原有的购物车数据
@@ -141,11 +140,11 @@ public class CartController {
     public String cartList(ModelMap model, HttpServletRequest request) {
 
         List<OmsCartItem> omsCartItems=new ArrayList<>();
-        String memberId="";
+        String memberId="1";
 
         if(StringUtils.isNotBlank(memberId)){
-            //已经登查询db
-
+            //已经登查询db  调用服务 修改状态
+            omsCartItems = cartService.cartList(memberId);
         }else{
             //没有登陆查询cookie
             String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
@@ -154,11 +153,78 @@ public class CartController {
             }
         }
 
-        for (OmsCartItem omsCartItem : omsCartItems) {
+        //计算小价
+    /*    for (OmsCartItem omsCartItem : omsCartItems) {
             omsCartItem.setTotalPrice(omsCartItem.getPrice().multiply(new BigDecimal(omsCartItem.getQuantity())));
-        }
+        }*/
 
+
+        //总价
+        BigDecimal totalAmount = getTotalAmount(omsCartItems);
+        model.addAttribute("totalAmount",totalAmount);
         model.addAttribute("cartList",omsCartItems);
         return  "cartList";
     }
+
+
+    @RequestMapping("/checkCart")
+    @ResponseBody
+    public Map<String,Object> checkCart(String isChecked,Long skuId,HttpServletRequest request,HttpServletResponse response){
+
+        Map<String,Object> map=new HashMap<>();
+        String memberId="1";
+
+        //判断如果用户登陆的话
+        if(StringUtils.isNotBlank(memberId)){
+            //调用服务,修改状态
+            OmsCartItem omsCartItem=new OmsCartItem();
+            omsCartItem.setMemberId(Long.parseLong(memberId));
+            omsCartItem.setProductSkuId(skuId);
+            omsCartItem.setIsChecked(isChecked);
+            cartService.checkCart(omsCartItem);
+
+            //计算总价
+            List<OmsCartItem> omsCartItems = cartService.cartList(memberId);
+            BigDecimal totalAmount =getTotalAmount(omsCartItems);
+            map.put("totalAmount",totalAmount);
+
+        }else{
+            // 没有登录 查询cookie
+            String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
+            //如果cookie里面没有值的话
+            if(StringUtils.isNotBlank(cartListCookie)){
+                List<OmsCartItem> omsCartItems = JSON.parseArray(cartListCookie,OmsCartItem.class);
+
+                //修改
+                for (OmsCartItem omsCartItem : omsCartItems) {
+                        if(omsCartItem.getProductSkuId()==skuId){
+                            omsCartItem.setIsChecked(isChecked);
+                            break;
+                        }
+                }
+                //保存cookie
+                CookieUtil.setCookie(request, response, "cartListCookie", JSON.toJSONString(omsCartItems), 60 * 60 * 72, true);
+                //计算总价
+                BigDecimal totalAmount =getTotalAmount(omsCartItems);
+                map.put("totalAmount",totalAmount);
+            }
+        }
+        return map;
+    }
+
+
+    //计算总价
+    public BigDecimal getTotalAmount(List<OmsCartItem> omsCartItems){
+        BigDecimal totalMonye=new BigDecimal(0);
+        for (OmsCartItem omsCartItem : omsCartItems) {
+            //计算小计
+            omsCartItem.setTotalPrice(omsCartItem.getPrice().multiply(new BigDecimal(omsCartItem.getQuantity())));
+            if (omsCartItem.getIsChecked().equals("1"))
+                totalMonye=totalMonye.add(omsCartItem.getTotalPrice());
+        }
+        return totalMonye;
+    }
+
+
+
 }
