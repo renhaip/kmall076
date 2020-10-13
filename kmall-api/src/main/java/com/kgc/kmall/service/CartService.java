@@ -22,4 +22,9 @@ public interface CartService {
     List<OmsCartItem> cartList(String memberId);
 
     void checkCart(OmsCartItem omsCartItem);
+
+
+
+    //修改状态  删除
+    void UpdateDelCart(List<Long> skuIds,String memberId);
 }

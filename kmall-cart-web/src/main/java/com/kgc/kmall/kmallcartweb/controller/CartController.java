@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -223,6 +224,72 @@ public class CartController {
                 totalMonye=totalMonye.add(omsCartItem.getTotalPrice());
         }
         return totalMonye;
+    }
+
+
+    @RequestMapping("/delCart")
+    @ResponseBody
+    public int DelCart(@RequestBody List<Long> skuIdlist, HttpServletRequest request, HttpServletResponse response){
+        System.out.println(skuIdlist);
+        //获取前台传来的集合
+        String memberId = "1";
+        if(StringUtils.isNotBlank(memberId)){//登录
+            //调用服务 修改选中
+            cartService.UpdateDelCart(skuIdlist,memberId);
+            return 1;
+        }else{//没有登录
+            //cookie
+            String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
+            if(StringUtils.isNotBlank(cartListCookie)) {
+                List<OmsCartItem> omsCartItems = JSON.parseArray(cartListCookie, OmsCartItem.class);
+                //修改
+                for (OmsCartItem omsCartItem : omsCartItems) {
+                    for (Long skuId : skuIdlist) {
+                        if(omsCartItem.getProductSkuId()==(long)skuId){
+                            omsCartItem.setQuantity(0);
+                            omsCartItem.setDeleteStatus(1);
+                        }
+                    }
+
+                }
+                //保存cookie
+                CookieUtil.setCookie(request, response, "cartListCookie", JSON.toJSONString(omsCartItems), 60 * 60 * 72, true);
+            }
+            return 1;
+        }
+    }
+
+    @RequestMapping("/updateNum")
+    @ResponseBody
+    public void Update(Long skuId,int num,HttpServletRequest request,HttpServletResponse response){
+        String memberId = "1";
+        if(StringUtils.isNotBlank(memberId)){//登录
+            //调用服务 修改选中
+            OmsCartItem omsCartItemFromDb = cartService.ifCartExistByUser(memberId,skuId);
+            omsCartItemFromDb.setQuantity(omsCartItemFromDb.getQuantity()+num);
+            System.out.println(omsCartItemFromDb);
+            if (omsCartItemFromDb.getQuantity()>0) {
+                cartService.updateCart(omsCartItemFromDb);
+                cartService.flushCartCache(memberId);
+            }
+        }else{//没有登录
+            //cookie
+            String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
+            if(StringUtils.isNotBlank(cartListCookie)) {
+                List<OmsCartItem> omsCartItems = JSON.parseArray(cartListCookie, OmsCartItem.class);
+                //修改
+                for (OmsCartItem omsCartItem : omsCartItems) {
+                    if(omsCartItem.getProductSkuId()==(long)skuId){
+                        omsCartItem.setQuantity(omsCartItem.getQuantity()+num);
+                        if(omsCartItem.getQuantity()==0){
+                            return;
+                        }
+                    }
+                }
+                //保存cookie
+                CookieUtil.setCookie(request, response, "cartListCookie", JSON.toJSONString(omsCartItems), 60 * 60 * 72, true);
+            }
+        }
     }
 
 

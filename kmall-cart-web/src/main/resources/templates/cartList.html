@@ -100,14 +100,14 @@
                             </li>
                             <li>
                                 <p>
-                                    <span>-</span>
+                                    <span th:data="${cartInfo.productSkuId}">-</span>
                                     <span th:text="${cartInfo.quantity}">5</span>
-                                    <span>+</span>
+                                    <span th:data="${cartInfo.productSkuId}">+</span>
                                 </p>
                             </li>
                             <li style="font-weight:bold"><p class="zj" th:text="'￥'+${cartInfo.totalPrice}"  >￥22995.00</p></li>
                             <li>
-                                <p>删除</p>
+                                <p  th:data="${cartInfo.productSkuId}">删除</p>
                             </li>
                         </ol>
                     </div>
@@ -195,7 +195,7 @@
             </dl>
     </div>
     <div>
-        <button type="button">删除</button>
+        <button type="button"  id="delCart">删除</button>
 
     </div>
 </div>
@@ -264,6 +264,7 @@
 </body>
 <script src="/js/index.js" charset="utf-8"></script>
 <script type="text/javascript">
+
 
      function toTrade(){
          window.location.href="http://cart.gmall.com:8087/toTrade";
@@ -551,7 +552,7 @@
         $(this).css("cursor","pointer")
     })
     //+
-    $(".One_ShopCon ul li>div:nth-child(2) ol>li:nth-child(4) p:first-child span:last-child").click(function(){
+   /* $(".One_ShopCon ul li>div:nth-child(2) ol>li:nth-child(4) p:first-child span:last-child").click(function(){
         var add=$(this).prev("span").html();
         add++;
         $(this).prev("span").html(add);
@@ -576,7 +577,23 @@
         $(this).parent().parent().parent().children("li:nth-child(5)").children(".zj").html("￥"+dj*sl+".00")
         sumSumPrice();
 
-    })
+    })*/
+
+     //购物车+ -
+     //鼠标移入变小手
+     $(".One_ShopCon ul li>div:nth-child(2) ol>li:nth-child(4) p:first-child span").mouseover(function(){
+         $(this).css("cursor","pointer")
+     })
+     //+
+     $(".One_ShopCon ul li>div:nth-child(2) ol>li:nth-child(4) p:first-child span:last-child").click(function(){
+         var skuId=$(this).attr("data");
+         var param="skuId="+skuId+"&"+"num="+1;
+         $.post("updateNum",param,function (data) {
+             window.location.reload();
+         });
+
+     })
+
     //选中当前商品背景变色
     $(".check").each(function(index){
         $(".check").eq(index).click(function(){

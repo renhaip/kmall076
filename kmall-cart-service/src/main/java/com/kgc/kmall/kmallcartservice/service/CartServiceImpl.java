@@ -108,4 +108,20 @@ public class CartServiceImpl implements CartService {
 
         flushCartCache(omsCartItem.getMemberId().toString());
     }
+
+    @Override
+    public void UpdateDelCart(List<Long> skuIds, String memberId) {
+        for (Long skuId : skuIds) {
+            OmsCartItemExample example=new OmsCartItemExample();
+            OmsCartItemExample.Criteria criteria=example.createCriteria();
+            criteria.andProductSkuIdEqualTo(skuId);
+            Long member_id=Long.parseLong(memberId);
+            criteria.andMemberIdEqualTo(member_id);
+            OmsCartItem omsCartItem=new OmsCartItem();
+            omsCartItem.setQuantity(0);
+            omsCartItem.setDeleteStatus(1);
+            int i=omsCartItemMapper.updateByExampleSelective(omsCartItem,example);
+        }
+        flushCartCache(memberId);
+    }
 }
