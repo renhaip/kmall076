@@ -86,7 +86,7 @@
 
                     <div>
                         <ol>
-                            <li><input type="checkbox"   class="check"  th:value="${cartInfo.productSkuId}"  onchange="checkSku(this)" th:checked="(${cartInfo.isChecked}==1)?'true':'false'" /></li>
+                            <li><input type="checkbox" name="check"  class="check"  th:value="${cartInfo.productSkuId}"  onchange="checkSku(this)" th:checked="(${cartInfo.isChecked}==1)?'true':'false'" /></li>
                             <li>
                                 <dt><img  th:src="${cartInfo.productPic}"  src="img\shop1.jpg" alt=""></dt>
                                 <dd  th:onclick="'toItem('+${cartInfo.productSkuId}+')'">
@@ -265,9 +265,22 @@
 <script src="/js/index.js" charset="utf-8"></script>
 <script type="text/javascript">
 
+    //选中的skuId
+    var skuIdscheck= [[${skuIdscheck}]];
+    //cart全部数据
+    // var cartList=[[${cartList}]];
+    //全部的skuId
+    var skuIdsAll=[[${skuIdsAll}]];
+    // for (var i=0;i<cartList.length;i++){
+    //     skuIdsAll.push(cartList[i].productSkuId);
+    // }
+    var skuIdlist=new Array();
+    var deltype=1;  //默认单条删除
+
+
 
      function toTrade(){
-         window.location.href="http://cart.gmall.com:8087/toTrade";
+         window.location.href="http://cart.kmall.com:8085/toTrade";
     }
     function toItem(skuId) {
         window.location.href="http://item.kmall.com:8083/"+skuId+".html";
@@ -471,6 +484,15 @@
             $(".One_isDel").show();  //删除弹框显示
             $(".One_moveGzIfNull").hide();
         }
+        skuIdlist=[];
+        var checkid=document.getElementsByName("check");
+        for(var i=0;i<checkid.length;i++){
+            if(checkid[i].checked){
+                var cartI=checkid[i].value;
+                skuIdlist.push(cartI)
+            }
+        }
+        console.log(skuIdlist);
         //移除结账固定定位
         // if($(".check").length==1){
         // 	$(".fix").remove();
@@ -562,22 +584,15 @@
         $(this).parent().parent().parent().children("li:nth-child(5)").children(".zj").html("￥"+dj*sl+".00")
         sumSumPrice();
 
-    })
+    })*/
     //-
     $(".One_ShopCon ul li>div:nth-child(2) ol>li:nth-child(4) p:first-child span:first-child").click(function(){
-        var jian=$(this).next("span").html();
-        jian--;
-        if(jian<=0){
-            jian=0;
-        }
-        $(this).next("span").html(jian);
-        //总价
-        var dj=$(this).parent().parent().prev().children(".dj").html().substring(1);
-        var sl=$(this).next("span").html();
-        $(this).parent().parent().parent().children("li:nth-child(5)").children(".zj").html("￥"+dj*sl+".00")
-        sumSumPrice();
-
-    })*/
+        var skuId=$(this).attr("data");
+        var param="skuId="+skuId+"&"+"num="+-1;
+        $.post("updateNum",param,function (data) {
+            window.location.reload();
+        });
+    })
 
      //购物车+ -
      //鼠标移入变小手
@@ -629,7 +644,10 @@
     $(".One_ShopCon ul li>div:nth-child(2) ol>li:nth-child(6) p:first-child").click(function(){
         $(".One_mb").show();
         $(".One_isDel").show();
-        var that=$(this);
+        skuIdlist=[];
+        var cart=$(this).attr("data");
+        skuIdlist.push(cart);
+
         //确定删除
 /*        $(".One_isDel>div:last-child button:first-child").click(function(){
             $(".One_mb").hide();
@@ -649,6 +667,41 @@
             }
         })*/
     })
+
+
+
+
+
+    //确定删除弹框移入我的关注
+    $(".One_isDel>div:last-child button:last-child").click(function(){
+            $.ajax({
+                type: 'post',
+                dataType: 'json',
+                url: '/delCart',
+                data: JSON.stringify(skuIdlist),
+                contentType:"application/json",
+                success: function (result) {
+                    if(result==1){
+                        window.location.reload();//刷新页面
+                    }
+
+                },
+                error: function(data){
+                    alert("操作异常");
+                }
+            });
+
+
+
+        $(".One_isDel").hide();
+        $(".One_mb").show();
+        $(".One_DengLu").show();
+    })
+
+
+
+
+
 /*    //页面滚动删除去结算固定定位隐藏
     $(document).scroll(function(){
         if($(".fix").offset().top>$(".fix1").offset().top){

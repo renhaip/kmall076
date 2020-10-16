@@ -25,6 +25,8 @@ public class SearchController {
     @Reference
     AttrService attrService;
 
+
+//    @LoginRequired(true)
     @RequestMapping("/index.html")
     public String index(){        return "index";}
 

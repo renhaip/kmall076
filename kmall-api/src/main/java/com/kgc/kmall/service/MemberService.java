@@ -11,4 +11,11 @@ import java.util.List;
 public interface MemberService {
 
     public List<Member> selectAllMember();
+
+
+    //登陆
+    Member login(String username,String password);
+
+    //增加user用户的token
+    void addUserToken(String token, Long memberId);
 }

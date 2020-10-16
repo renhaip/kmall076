@@ -1,6 +1,7 @@
 package com.kgc.kmall.kmallcartweb.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.kgc.kmall.annotations.LoginRequired;
 import com.kgc.kmall.bean.OmsCartItem;
 import com.kgc.kmall.bean.PmsSkuInfo;
 import com.kgc.kmall.service.CartService;
@@ -32,6 +33,7 @@ public class CartController {
     @Reference
     CartService cartService;
 
+    @LoginRequired(value = false)
     @RequestMapping("/addToCart")
     public String addToCart(long skuId, Integer num, HttpServletResponse response, HttpServletRequest request) {
 
@@ -80,6 +82,7 @@ public class CartController {
                     for (OmsCartItem cartItem : omsCartItems) {
                         if (cartItem.getProductSkuId().equals(omsCartItem.getProductSkuId())) {
                             cartItem.setQuantity(cartItem.getQuantity() + omsCartItem.getQuantity());
+                            cartItem.setDeleteStatus(0);
                             break;
                         }
                     }
@@ -111,6 +114,7 @@ public class CartController {
                 Integer quantity = omsCartItemFromDb.getQuantity();
                 quantity = quantity + num;
                 omsCartItemFromDb.setQuantity(quantity);
+                omsCartItemFromDb.setDeleteStatus(0);
                 cartService.updateCart(omsCartItemFromDb);
             }
 
@@ -137,10 +141,13 @@ public class CartController {
         return b;
     }
 
-    @RequestMapping("/cartList")
+    /*@RequestMapping("/cartList")
     public String cartList(ModelMap model, HttpServletRequest request) {
 
         List<OmsCartItem> omsCartItems=new ArrayList<>();
+
+        List<Long> skuIds=new ArrayList<>();
+
         String memberId="1";
 
         if(StringUtils.isNotBlank(memberId)){
@@ -155,9 +162,9 @@ public class CartController {
         }
 
         //计算小价
-    /*    for (OmsCartItem omsCartItem : omsCartItems) {
+    *//*    for (OmsCartItem omsCartItem : omsCartItems) {
             omsCartItem.setTotalPrice(omsCartItem.getPrice().multiply(new BigDecimal(omsCartItem.getQuantity())));
-        }*/
+        }*//*
 
 
         //总价
@@ -165,9 +172,57 @@ public class CartController {
         model.addAttribute("totalAmount",totalAmount);
         model.addAttribute("cartList",omsCartItems);
         return  "cartList";
+    }*/
+    @LoginRequired(false)
+    @RequestMapping("/cartList")
+    public String cartList(ModelMap modelMap,HttpServletRequest request){
+        List<OmsCartItem> omsCartItems=new ArrayList<>();
+        List<Long> skuIds=new ArrayList<>();
+        List<Long> skuIds2=new ArrayList<>();
+        String memberId = "1";
+        if(StringUtils.isNotBlank(memberId)){//已登录
+            List<OmsCartItem> items=cartService.cartList(memberId);
+            for (OmsCartItem item : items) {
+                //显示状态为0的加入到集合
+                if(item.getDeleteStatus()==0){
+                    omsCartItems.add(item);
+                    if(item.getIsChecked().equals("1")){//将选中的
+                        //将skuId添加
+                        skuIds.add(item.getProductSkuId());
+                    }
+                    skuIds2.add(item.getProductSkuId());//全部的
+                }
+            }
+        }else{//未登录
+            // cookie里原有的购物车数据
+            String cartListCookie = CookieUtil.getCookieValue(request, "cartListCookie", true);
+            if(StringUtils.isNotBlank(cartListCookie)){
+                List<OmsCartItem> items=JSON.parseArray(cartListCookie,OmsCartItem.class);
+                for (OmsCartItem item : items) {
+                    //显示状态为0的加入到集合
+                    if(item.getDeleteStatus()==0){
+                        omsCartItems.add(item);
+                        if(item.getIsChecked().equals("1")){//将选中的
+                            //将skuId添加
+                            skuIds.add(item.getProductSkuId());
+                        }
+                        skuIds2.add(item.getProductSkuId());//全部的
+                    }
+                }
+            }
+        }
+        BigDecimal totalAmount =getTotalAmount(omsCartItems);
+        modelMap.put("totalAmount",totalAmount);
+        modelMap.put("cartList",omsCartItems);
+        //获取已选中的skuId
+        modelMap.put("skuIdscheck",skuIds);
+        //获取全部的skuId
+        modelMap.put("skuIdsAll",skuIds2);
+        return "cartList";
     }
 
 
+    @LoginRequired(false)
     @RequestMapping("/checkCart")
     @ResponseBody
     public Map<String,Object> checkCart(String isChecked,Long skuId,HttpServletRequest request,HttpServletResponse response){
@@ -292,6 +347,12 @@ public class CartController {
         }
     }
 
+    @LoginRequired(false)
+    @RequestMapping("toTrade")
+    public String toTrade() {
+
+        return "toTrade";
+    }
 
 
 }
