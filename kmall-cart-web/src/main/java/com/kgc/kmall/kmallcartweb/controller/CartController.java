@@ -60,7 +60,12 @@ public class CartController {
         omsCartItem.setQuantity(num);
 
         // 判断用户是否登录
-        String memberId = "1";
+        String memberId = "";
+
+        if(request.getAttribute("memberId")!=null){
+            Integer id=(Integer) request.getAttribute("memberId");
+            memberId=id+"";
+        }
 
         if (StringUtils.isBlank(memberId)) {
             //cookie里原有的购物车数据
@@ -179,7 +184,13 @@ public class CartController {
         List<OmsCartItem> omsCartItems=new ArrayList<>();
         List<Long> skuIds=new ArrayList<>();
         List<Long> skuIds2=new ArrayList<>();
-        String memberId = "1";
+
+        String memberId = "";
+        if(request.getAttribute("memberId")!=null){
+            Integer id=(Integer) request.getAttribute("memberId");
+            memberId=id+"";
+        }
+
         if(StringUtils.isNotBlank(memberId)){//已登录
             List<OmsCartItem> items=cartService.cartList(memberId);
             for (OmsCartItem item : items) {
@@ -228,7 +239,13 @@ public class CartController {
     public Map<String,Object> checkCart(String isChecked,Long skuId,HttpServletRequest request,HttpServletResponse response){
 
         Map<String,Object> map=new HashMap<>();
-        String memberId="1";
+        String memberId="";
+        if(request.getAttribute("memberId")!=null){
+            Integer id=(Integer) request.getAttribute("memberId");
+//            memberId=request.getAttribute("memberId").toString();
+            memberId=id+"";
+        }
+
 
         //判断如果用户登陆的话
         if(StringUtils.isNotBlank(memberId)){
@@ -287,7 +304,12 @@ public class CartController {
     public int DelCart(@RequestBody List<Long> skuIdlist, HttpServletRequest request, HttpServletResponse response){
         System.out.println(skuIdlist);
         //获取前台传来的集合
-        String memberId = "1";
+        String memberId = "";
+        if(request.getAttribute("memberId")!=null){
+            Integer id=(Integer) request.getAttribute("memberId");
+            memberId=id+"";
+        }
+
         if(StringUtils.isNotBlank(memberId)){//登录
             //调用服务 修改选中
             cartService.UpdateDelCart(skuIdlist,memberId);
@@ -317,7 +339,12 @@ public class CartController {
     @RequestMapping("/updateNum")
     @ResponseBody
     public void Update(Long skuId,int num,HttpServletRequest request,HttpServletResponse response){
-        String memberId = "1";
+        String memberId = "";
+        if(request.getAttribute("memberId")!=null){
+            Integer id=(Integer) request.getAttribute("memberId");
+            memberId=id+"";
+        }
+
         if(StringUtils.isNotBlank(memberId)){//登录
             //调用服务 修改选中
             OmsCartItem omsCartItemFromDb = cartService.ifCartExistByUser(memberId,skuId);
@@ -347,7 +374,7 @@ public class CartController {
         }
     }
 
-    @LoginRequired(false)
+    @LoginRequired(true)
     @RequestMapping("toTrade")
     public String toTrade() {
 

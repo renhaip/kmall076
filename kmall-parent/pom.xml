@@ -20,32 +20,22 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-
         <mybatis.version>2.1.2</mybatis.version>
-
-
         <dubbo.spring.boot.starter.version>2.7.1</dubbo.spring.boot.starter.version>
         <dubbo.version>2.7.1</dubbo.version>
         <dubbo.dependencies.zookeeper.version>2.7.1</dubbo.dependencies.zookeeper.version>
         <fastdfs-client-java>1.29-SNAPSHOT</fastdfs-client-java>
-
         <commons-io>2.6</commons-io>
-
         <!--json-->
         <fastjson.version>1.2.46</fastjson.version>
-
         <!--jedis 缓存-->
         <jedis.version>2.9.0</jedis.version>
-
         <redisson.version>3.10.5</redisson.version>
-
         <jest.version>5.3.4</jest.version>
-
         <elasticsearch-rest-high-level-client.version>6.2.3</elasticsearch-rest-high-level-client.version>
-
         <commons.lang3>3.8.1</commons.lang3>
-
         <jjwt.version>0.9.0</jjwt.version>
+        <httpclient.version>4.5.5</httpclient.version>
     </properties>
 
     <dependencyManagement>
@@ -131,6 +121,12 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
             </dependency>
 
         </dependencies>
