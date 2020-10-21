@@ -374,12 +374,12 @@ public class CartController {
         }
     }
 
-    @LoginRequired(true)
+ /*   @LoginRequired(true)
     @RequestMapping("toTrade")
     public String toTrade() {
 
         return "toTrade";
-    }
+    }*/
 
 
 }

@@ -1,7 +1,9 @@
 package com.kgc.kmall.kmallpassportweb.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.kgc.kmall.bean.Member;
 import com.kgc.kmall.service.MemberService;
+import com.kgc.kmall.util.HttpclientUtil;
 import com.kgc.kmall.util.JwtUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
@@ -86,4 +88,90 @@ public class PassportController {
         }
         return map;
     }
+
+    @RequestMapping("/vlogin")
+    public String vlogin(String code,HttpServletRequest request){
+
+
+        //code 接收授权码
+
+        //根据授权码获取access_token
+        String s3 = "https://api.weibo.com/oauth2/access_token";
+        Map<String,String> paramMap = new HashMap<>();
+        paramMap.put("client_id","565019016");
+        paramMap.put("client_secret","ffd261f78fd2e68317a4e43faae7edef");
+        paramMap.put("grant_type","authorization_code");
+        paramMap.put("redirect_uri","http://passport.kmall.com:8086/vlogin");
+        paramMap.put("code",code);// 授权有效期内可以使用，没新生成一次授权码，说明用户对第三方数据进行重启授权，之前的access_token和授权码全部过期
+        String access_token_json = HttpclientUtil.doPost(s3, paramMap);
+
+        Map<String,String> access_map = JSON.parseObject(access_token_json,Map.class);
+/*        System.out.println(access_map);
+        System.out.println(access_map.get("uid"));*/
+
+        String access_token = access_map.get("access_token");
+        String uid = access_map.get("uid");
+
+        //根据access_token获取用户信息
+        // 4 用access_token查询用户信息
+        String s4 = "https://api.weibo.com/2/users/show.json?access_token="+access_token+"&uid="+uid;
+        String user_json = HttpclientUtil.doGet(s4);
+        Map<String,String> user_map = JSON.parseObject(user_json,Map.class);
+        System.out.println(user_map);
+
+
+
+
+        //将用户信息保存到数据库
+        Member member=new Member();
+        member.setSourceType(2);
+        member.setAccessToken(access_token);
+        member.setSourceUid(Long.parseLong((String)user_map.get("idstr")));
+        member.setCity((String)user_map.get("location"));
+        member.setNickname((String)user_map.get("screen_name"));
+
+        Integer g=0;
+
+        String gender = user_map.get("gender");
+        if(gender.equals("m")){
+            g=1;
+        }
+        member.setGender(g);
+
+        Member umsMemberCheck  = memberService.checkOauthUser(member.getSourceUid());
+
+        if(umsMemberCheck==null){
+                memberService.addOauthUser(member);
+        }else{
+            member=umsMemberCheck;
+        }
+
+
+        //用jwt制作token
+        String token="";
+        Long id = member.getId();
+        String nickname = member.getNickname();
+
+        Map<String,Object> map=new HashMap<>();
+        map.put("memberId",id);
+        map.put("nickname",nickname);
+
+        // 如果使用了nginx，则需要如此获取客户端ip
+        //            String ip = request.getHeader("x-forwarded-for");
+        //如果没有使用nginx
+
+        String ip = request.getRemoteAddr();// 从request中获取ip
+        if(StringUtils.isBlank(ip)||ip.equals("0:0:0:0:0:0:0:1")){
+            ip = "127.0.0.1";
+        }
+
+        //按照设计的算法对参数进行加密后,生成token
+        token  = JwtUtil.encode("2020kmall076", map, ip);
+
+        //将token 存入redis一份
+        memberService.addUserToken(token,id);
+
+        return "redirect:http://search.kmall.com:8084/index.html?token="+token;
+    }
+
 }

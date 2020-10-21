@@ -3,8 +3,11 @@ package com.kgc.kmall.user.service;
 import com.alibaba.fastjson.JSON;
 import com.kgc.kmall.bean.Member;
 import com.kgc.kmall.bean.MemberExample;
+import com.kgc.kmall.bean.MemberReceiveAddress;
+import com.kgc.kmall.bean.MemberReceiveAddressExample;
 import com.kgc.kmall.service.MemberService;
 import com.kgc.kmall.user.mapper.MemberMapper;
+import com.kgc.kmall.user.mapper.MemberReceiveAddressMapper;
 import com.kgc.kmall.user.util.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
@@ -25,6 +28,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Resource
     RedisUtil redisUtil;
+
+    @Resource
+    MemberReceiveAddressMapper memberReceiveAddressMapper;
 
     @Override
     public List<Member> selectAllMember() {
@@ -67,6 +73,37 @@ public class MemberServiceImpl implements MemberService {
         Jedis jedis = redisUtil.getJedis();
         jedis.setex("user:"+memberId+":token",60*60*2,token);
         jedis.close();
+    }
+
+    @Override
+    public Member checkOauthUser(Long sourceUid) {
+        MemberExample example=new MemberExample();
+        example.createCriteria().andSourceUidEqualTo(sourceUid);
+        List<Member> members = memberMapper.selectByExample(example);
+        if(members.size()>0){
+            return  members.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public Integer addOauthUser(Member member) {
+        return memberMapper.insertSelective(member);
+    }
+
+    @Override
+    public List<MemberReceiveAddress> getReceiveAddressByMemberId(Long memberId) {
+        MemberReceiveAddressExample example=new MemberReceiveAddressExample();
+        example.createCriteria().andMemberIdEqualTo(memberId);
+        List<MemberReceiveAddress> members = memberReceiveAddressMapper.selectByExample(example);
+        return members;
+    }
+
+    @Override
+    public MemberReceiveAddress getReceiveAddressById(Long receiveAddressId) {
+
+        return  memberReceiveAddressMapper.selectByPrimaryKey(receiveAddressId);
     }
 
     public Member getMember(String username,String password){

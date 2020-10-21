@@ -13,6 +13,7 @@ import org.redisson.api.RedissonClient;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
@@ -220,5 +221,17 @@ public class SkuServiceImpl implements SkuService {
             pmsSkuInfo.setSkuAttrValueList(pmsSkuAttrValues);
         }
         return pmsSkuInfos;
+    }
+
+    @Override
+    public boolean checkPrice(Long productSkuId, BigDecimal price) {
+        boolean b=false;
+
+        PmsSkuInfo pmsSkuInfo = pmsSkuInfoMapper.selectByPrimaryKey(productSkuId);
+        BigDecimal bigDecimal=new BigDecimal(pmsSkuInfo.getPrice());
+        if(price.compareTo(bigDecimal)==0){
+            b=true;
+        }
+        return b;
     }
 }
