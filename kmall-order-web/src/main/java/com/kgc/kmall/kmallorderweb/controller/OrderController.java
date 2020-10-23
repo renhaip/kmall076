@@ -106,100 +106,85 @@ public class OrderController {
                               String tradeCode,
                               HttpServletRequest request){
 
-        //从拦截器中获取用户memberid和nickname
-        Integer memberId = (Integer) request.getAttribute("memberId");
-        String nickname = (String) request.getAttribute("nickname");
-
-        // 检查交易码
-        String success = orderService.checkTradeCode(Long.valueOf(memberId), tradeCode);
-
-        if (success.equals("success")) {
+        //从拦截器中虎丘用户memberId和nickName
+        Integer memberId=(Integer) request.getAttribute("memberId");
+        String nickname=(String) request.getAttribute("nickname");
+        //检查验证码
+        String s = orderService.checkTradeCode((long) memberId, tradeCode);
+        if(s.equals("success")){
+            //提交成功
             System.out.println("提交订单");
-            System.out.println(receiveAddressId);
-            System.out.println(totalAmount);
-
-
-            List<OmsOrderItem> omsOrderItems=new ArrayList<>();
+            System.out.println("收获地址编号:"+receiveAddressId);
+            System.out.println("总价钱:"+totalAmount);
+            List<OmsOrderItem> orderItems=new ArrayList<>();
             //订单对象
             OmsOrder omsOrder=new OmsOrder();
-            omsOrder.setAutoConfirmDay(7);
+            omsOrder.setAutoConfirmDay(7);//自动确认时间
             omsOrder.setCreateTime(new Date());
-            omsOrder.setDiscountAmount(null);
-            //omsOrder.setFreightAmount(); 运费，支付后，在生成物流信息时
-            omsOrder.setMemberId(Long.valueOf(memberId));
+            omsOrder.setDiscountAmount(null);//
+            //omsOrder.setFreightAmount();  运费
+            omsOrder.setMemberId((long) memberId);
             omsOrder.setMemberUsername(nickname);
-            omsOrder.setNote("快点发货");
-
+            omsOrder.setNote("快点发货!");
             String outTradeNo="kmall";
-            outTradeNo=outTradeNo+System.currentTimeMillis();//将毫秒时间拼接到外部订单号
-
-            SimpleDateFormat sdf=new SimpleDateFormat("YYYYMMDDHHmmss");
-            outTradeNo=outTradeNo=sdf.format(new Date());
-            omsOrder.setOrderSn(outTradeNo);  //外部订单号
-
-            omsOrder.setPayAmount(totalAmount);
+            outTradeNo=outTradeNo+System.currentTimeMillis();//将毫秒数时间戳拼接到外部订单号
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMDDHHmmss");
+            outTradeNo=outTradeNo+sdf.format(new Date());//将时间字符串拼接到订单号
+            omsOrder.setOrderSn(outTradeNo);//外部订单号
+            omsOrder.setPayAmount(totalAmount);//总价钱
             omsOrder.setOrderType(1);
-
-            MemberReceiveAddress umsMemberReceiveAddress = memberService.getReceiveAddressById(Long.parseLong(receiveAddressId));
-            omsOrder.setReceiverCity(umsMemberReceiveAddress.getCity());
-            omsOrder.setReceiverDetailAddress(umsMemberReceiveAddress.getDetailAddress());
-            omsOrder.setReceiverName(umsMemberReceiveAddress.getName());
-            omsOrder.setReceiverPhone(umsMemberReceiveAddress.getPhoneNumber());
-            omsOrder.setReceiverPostCode(umsMemberReceiveAddress.getPostCode());
-            omsOrder.setReceiverProvince(umsMemberReceiveAddress.getProvince());
-            omsOrder.setReceiverRegion(umsMemberReceiveAddress.getRegion());
-            // 当前日期加一天，一天后配送
-            Calendar c = Calendar.getInstance();
+            MemberReceiveAddress address=memberService.getReceiveAddressById(Long.parseLong(receiveAddressId));
+            omsOrder.setReceiverCity(address.getDetailAddress());
+            omsOrder.setReceiverName(address.getName());
+            omsOrder.setReceiverPhone(address.getPhoneNumber());
+            omsOrder.setReceiverPostCode(address.getPostCode());
+            omsOrder.setReceiverProvince(address.getProvince());
+            omsOrder.setReceiverRegion(address.getRegion());
+            //当前日期加一天，一天后配送
+            Calendar c=Calendar.getInstance();
             c.add(Calendar.DATE,1);
-            Date time = c.getTime();
+            Date time=c.getTime();
             omsOrder.setReceiveTime(time);
             omsOrder.setSourceType(0);
             omsOrder.setStatus(0);
             omsOrder.setOrderType(0);
             omsOrder.setTotalAmount(totalAmount);
 
-            //根据用户id获得要购买的商品列表(购物车)，和总价格
-            List<OmsCartItem> omsCartItems = cartService.cartList(memberId.toString());
-
+            //根据用户id获取购买的得商品列表（购物车），和总价格
+            List<OmsCartItem> omsCartItems=cartService.cartList(memberId+"");
             for (OmsCartItem omsCartItem : omsCartItems) {
                 if(omsCartItem.getIsChecked().equals("1")){
-                    //获得订单详情列表
+                    //获取订单详情列表
                     OmsOrderItem omsOrderItem=new OmsOrderItem();
-                    //检价
+                    //减价
                     boolean b=skuService.checkPrice(omsCartItem.getProductSkuId(),omsCartItem.getPrice());
-
                     if(b==false){
                         return "tradeFail";
                     }
-                    // 验库存,远程调用库存系统
-                    omsOrderItem.setProductPic(omsCartItem.getProductPic());
-                    omsOrderItem.setProductName(omsCartItem.getProductName());
-
-                    omsOrderItem.setOrderSn(outTradeNo);// 外部订单号，用来和其他系统进行交互，防止重复
-                    omsOrderItem.setProductCategoryId(omsCartItem.getProductCategoryId());
-                    omsOrderItem.setProductPrice(omsCartItem.getPrice());
-                    omsOrderItem.setRealAmount(omsCartItem.getTotalPrice());
-                    omsOrderItem.setProductQuantity(omsCartItem.getQuantity());
-                    omsOrderItem.setProductSkuCode("111111111111");
+                    //验库存，远程调用库存系统
+                    omsOrderItem.setProductPic(omsCartItem.getProductPic());//写图片
+                    omsOrderItem.setProductName(omsCartItem.getProductName());//写名字
+                    omsOrderItem.setProductCategoryId(omsCartItem.getProductCategoryId());//
+                    omsOrderItem.setProductPrice(omsCartItem.getPrice());//单价
+                    omsOrderItem.setRealAmount(omsCartItem.getTotalPrice());//总价
+                    omsOrderItem.setProductQuantity(omsCartItem.getQuantity());//写数量
+                    omsOrderItem.setProductSkuCode("1111111111");
                     omsOrderItem.setProductSkuId(omsCartItem.getProductSkuId());
                     omsOrderItem.setProductId(omsCartItem.getProductId());
-                    omsOrderItem.setProductSn("仓库对应的商品编号");// 在仓库中的skuId
+                    omsOrderItem.setProductSn("仓库对应的商品编号");
+                    omsOrderItem.setOrderSn(omsOrder.getOrderSn());
+                    orderItems.add(omsOrderItem);
 
-                    omsOrderItems.add(omsOrderItem);
                 }
             }
-            omsOrder.setOrderItems(omsOrderItems);
-
-            // 将订单和订单详情写入数据库
-            // 删除购物车的对应商品,暂时不进行删除，因为接下来需要频繁的测试
-
+            omsOrder.setOrderItems(orderItems);
+            //将定点杆和订单详情写入数据库
+            //删除购物车的对应商品(暂时先不删)
             orderService.saveOrder(omsOrder);
-
-
+            return "redirect:http://payment.kmall.com:8088/index?outTradeNo="+outTradeNo+"&totalAmount="+totalAmount;
         }else{
+            //提交失败
             return "tradeFail";
         }
-        //重定向到支付系统
-        return null;
     }
 }

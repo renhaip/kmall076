@@ -1,6 +1,7 @@
 package com.kgc.kmall.kmallorderservice.service;
 
 import com.kgc.kmall.bean.OmsOrder;
+import com.kgc.kmall.bean.OmsOrderExample;
 import com.kgc.kmall.bean.OmsOrderItem;
 import com.kgc.kmall.kmallorderservice.mapper.OmsOrderItemMapper;
 import com.kgc.kmall.kmallorderservice.mapper.OmsOrderMapper;
@@ -70,6 +71,18 @@ public class OrderServiceImpl implements OrderService {
             omsOrderItemMapper.insertSelective(orderItem);
             // 删除购物车数据,暂时不进行购物车删除，因为需要频繁的测试
             // cartService.delCart();
+        }
+    }
+
+    @Override
+    public OmsOrder getOrderByOutTradeNo(String outTradeNo) {
+        OmsOrderExample example=new OmsOrderExample();
+        example.createCriteria().andOrderSnEqualTo(outTradeNo);
+        List<OmsOrder> omsOrders = omsOrderMapper.selectByExample(example);
+        if(omsOrders!=null&&omsOrders.size()>0){
+            return   omsOrders.get(0);
+        }else{
+            return null;
         }
     }
 }
