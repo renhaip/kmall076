@@ -17,4 +17,7 @@ public interface OrderService {
 
 
     OmsOrder getOrderByOutTradeNo(String outTradeNo);
+
+    //创建修改订单方法
+    public void updateOrder(OmsOrder omsOrder);
 }
